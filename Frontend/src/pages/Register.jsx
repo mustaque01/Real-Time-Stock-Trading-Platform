@@ -39,8 +39,7 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div classNamemin-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-5">
       <div className="bg-bg-secondary rounded-xl p-10 w-full max-w-md shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">
