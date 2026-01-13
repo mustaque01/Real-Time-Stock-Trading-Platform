@@ -131,7 +131,8 @@ const Register = () => {
               <Link to="/login" className="text-primary hover:text-primary-dark font-semibold transition">
                 Login
               </Link>
-            
+            </p>
+          </div>
         </form>
       </div>
     </div>
