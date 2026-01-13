@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
-import '../styles/Orders.css';
 
 const Orders = () => {
   const { token } = useAuth();
@@ -39,20 +38,20 @@ const Orders = () => {
   const getStatusClass = (status) => {
     switch (status) {
       case 'FILLED':
-        return 'status-filled';
+        return 'bg-success/20 text-success';
       case 'PARTIAL':
-        return 'status-partial';
+        return 'bg-warning/20 text-warning';
       case 'PENDING':
-        return 'status-pending';
+        return 'bg-primary/20 text-primary';
       case 'CANCELLED':
-        return 'status-cancelled';
+        return 'bg-danger/20 text-danger';
       default:
         return '';
     }
   };
 
   const getTypeClass = (type) => {
-    return type === 'BUY' ? 'type-buy' : 'type-sell';
+    return type === 'BUY' ? 'text-success' : 'text-danger';
   };
 
   const cancelOrder = async (orderId) => {
@@ -68,21 +67,29 @@ const Orders = () => {
   };
 
   return (
-    <div className="orders-page">
+    <div className="min-h-screen">
       <Navbar />
       
-      <div className="orders-content">
-        <h1>Orders & Trades</h1>
+      <div className="p-8 max-w-[1800px] mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Orders & Trades</h1>
 
-        <div className="tabs">
+        <div className="flex gap-4 mb-8 border-b border-gray-700">
           <button 
-            className={activeTab === 'orders' ? 'active' : ''}
+            className={`px-6 py-3 font-semibold transition ${
+              activeTab === 'orders'
+                ? 'text-white border-b-2 border-primary'
+                : 'text-gray-400'
+            }`}
             onClick={() => setActiveTab('orders')}
           >
             My Orders
           </button>
           <button 
-            className={activeTab === 'trades' ? 'active' : ''}
+            className={`px-6 py-3 font-semibold transition ${
+              activeTab === 'trades'
+                ? 'text-white border-b-2 border-primary'
+                : 'text-gray-400'
+            }`}
             onClick={() => setActiveTab('trades')}
           >
             Trade History
@@ -90,16 +97,18 @@ const Orders = () => {
         </div>
 
         {loading ? (
-          <div className="loading">Loading...</div>
+          <div className="flex justify-center items-center py-10 text-gray-400">
+            Loading...
+          </div>
         ) : activeTab === 'orders' ? (
-          <div className="orders-table">
+          <div className="bg-bg-secondary border border-gray-700 rounded-xl overflow-hidden">
             {orders.length === 0 ? (
-              <div className="empty-state">
+              <div className="text-center py-16 text-gray-400">
                 <p>No orders found</p>
               </div>
             ) : (
               <>
-                <div className="table-header">
+                <div className="grid grid-cols-10 gap-3 p-6 bg-bg-tertiary font-semibold text-gray-400 text-sm border-b border-gray-700">
                   <div>Order ID</div>
                   <div>Symbol</div>
                   <div>Type</div>
@@ -108,15 +117,15 @@ const Orders = () => {
                   <div>Price</div>
                   <div>Filled</div>
                   <div>Status</div>
-                  <div>Date</div>
+                  <div className="col-span-1">Date</div>
                   <div>Actions</div>
                 </div>
 
                 {orders.map((order) => (
-                  <div key={order.id} className="table-row">
-                    <div className="order-id">{order.id.substring(0, 8)}</div>
-                    <div className="symbol">{order.symbol}</div>
-                    <div className={getTypeClass(order.type)}>
+                  <div key={order.id} className="grid grid-cols-10 gap-3 p-6 border-b border-gray-700 last:border-b-0 items-center text-sm">
+                    <div className="font-mono text-gray-400 text-xs">{order.id.substring(0, 8)}</div>
+                    <div className="font-bold">{order.symbol}</div>
+                    <div className={`font-semibold ${getTypeClass(order.type)}`}>
                       {order.type}
                     </div>
                     <div>{order.orderType}</div>
@@ -124,15 +133,15 @@ const Orders = () => {
                     <div>${order.price.toFixed(2)}</div>
                     <div>{order.filledQuantity || 0}</div>
                     <div>
-                      <span className={`status-badge ${getStatusClass(order.status)}`}>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${getStatusClass(order.status)}`}>
                         {order.status}
                       </span>
                     </div>
-                    <div>{new Date(order.createdAt).toLocaleString()}</div>
+                    <div className="col-span-1 text-xs">{new Date(order.createdAt).toLocaleString()}</div>
                     <div>
                       {(order.status === 'PENDING' || order.status === 'PARTIAL') && (
                         <button 
-                          className="btn-cancel"
+                          className="px-3 py-1.5 border border-danger text-danger rounded-lg text-xs font-semibold hover:bg-danger hover:text-white transition"
                           onClick={() => cancelOrder(order.id)}
                         >
                           Cancel
@@ -145,34 +154,34 @@ const Orders = () => {
             )}
           </div>
         ) : (
-          <div className="trades-table">
+          <div className="bg-bg-secondary border border-gray-700 rounded-xl overflow-hidden">
             {trades.length === 0 ? (
-              <div className="empty-state">
+              <div className="text-center py-16 text-gray-400">
                 <p>No trades found</p>
               </div>
             ) : (
               <>
-                <div className="table-header">
+                <div className="grid grid-cols-7 gap-4 p-6 bg-bg-tertiary font-semibold text-gray-400 text-sm border-b border-gray-700">
                   <div>Trade ID</div>
                   <div>Symbol</div>
                   <div>Type</div>
                   <div>Quantity</div>
                   <div>Price</div>
                   <div>Total</div>
-                  <div>Date</div>
+                  <div className="col-span-1">Date</div>
                 </div>
 
                 {trades.map((trade) => (
-                  <div key={trade.id} className="table-row">
-                    <div className="trade-id">{trade.id.substring(0, 8)}</div>
-                    <div className="symbol">{trade.symbol}</div>
-                    <div className={getTypeClass(trade.type)}>
+                  <div key={trade.id} className="grid grid-cols-7 gap-4 p-6 border-b border-gray-700 last:border-b-0 items-center text-sm">
+                    <div className="font-mono text-gray-400 text-xs">{trade.id.substring(0, 8)}</div>
+                    <div className="font-bold">{trade.symbol}</div>
+                    <div className={`font-semibold ${getTypeClass(trade.type)}`}>
                       {trade.type}
                     </div>
                     <div>{trade.quantity}</div>
                     <div>${trade.price.toFixed(2)}</div>
                     <div>${(trade.quantity * trade.price).toFixed(2)}</div>
-                    <div>{new Date(trade.executedAt).toLocaleString()}</div>
+                    <div className="col-span-1 text-xs">{new Date(trade.executedAt).toLocaleString()}</div>
                   </div>
                 ))}
               </>
