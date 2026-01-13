@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
-import '../styles/Wallet.css';
 
 const Wallet = () => {
   const { token } = useAuth();
@@ -73,8 +72,8 @@ const Wallet = () => {
   };
 
   const getTransactionClass = (type) => {
-    if (type === 'DEPOSIT' || type === 'SELL') return 'credit';
-    if (type === 'WITHDRAW' || type === 'BUY') return 'debit';
+    if (type === 'DEPOSIT' || type === 'SELL') return 'text-positive';
+    if (type === 'WITHDRAW' || type === 'BUY') return 'text-negative';
     return '';
   };
 
@@ -84,21 +83,25 @@ const Wallet = () => {
   };
 
   return (
-    <div className="wallet-page">
+    <div className="min-h-screen">
       <Navbar />
       
-      <div className="wallet-content">
-        <h1>Wallet</h1>
+      <div className="p-8 max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Wallet</h1>
 
-        <div className="wallet-balance-card">
-          <span className="balance-label">Available Balance</span>
-          <span className="balance-amount">${balance.toFixed(2)}</span>
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-10 flex flex-col gap-3 mb-8 shadow-lg">
+          <span className="text-sm opacity-90 font-medium">Available Balance</span>
+          <span className="text-5xl font-bold">${balance.toFixed(2)}</span>
         </div>
 
-        <div className="wallet-actions">
-          <div className="tabs">
+        <div className="bg-bg-secondary border border-gray-700 rounded-xl p-8 mb-8">
+          <div className="flex gap-4 mb-6 border-b border-gray-700">
             <button 
-              className={activeTab === 'deposit' ? 'active' : ''}
+              className={`px-6 py-3 font-semibold transition ${
+                activeTab === 'deposit'
+                  ? 'text-white border-b-2 border-primary'
+                  : 'text-gray-400'
+              }`}
               onClick={() => {
                 setActiveTab('deposit');
                 setMessage({ type: '', text: '' });
@@ -107,7 +110,11 @@ const Wallet = () => {
               Deposit
             </button>
             <button 
-              className={activeTab === 'withdraw' ? 'active' : ''}
+              className={`px-6 py-3 font-semibold transition ${
+                activeTab === 'withdraw'
+                  ? 'text-white border-b-2 border-primary'
+                  : 'text-gray-400'
+              }`}
               onClick={() => {
                 setActiveTab('withdraw');
                 setMessage({ type: '', text: '' });
@@ -117,11 +124,15 @@ const Wallet = () => {
             </button>
           </div>
 
-          <form onSubmit={handleTransaction} className="transaction-form">
-            <div className="form-group">
-              <label htmlFor="amount">Amount</label>
-              <div className="input-wrapper">
-                <span className="currency">$</span>
+          <form onSubmit={handleTransaction} className="max-w-lg space-y-5">
+            <div>
+              <label htmlFor="amount" className="block mb-2 text-gray-400 font-medium">
+                Amount
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">
+                  $
+                </span>
                 <input
                   type="number"
                   id="amount"
@@ -130,20 +141,29 @@ const Wallet = () => {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
+                  className="w-full pl-8 pr-4 py-3 border border-gray-700 rounded-lg bg-bg-tertiary text-white font-semibold text-base focus:outline-none focus:border-primary"
                   required
                 />
               </div>
             </div>
 
             {message.text && (
-              <div className={`message ${message.type}`}>
+              <div className={`p-3 rounded-lg ${
+                message.type === 'success'
+                  ? 'bg-success/10 border border-success text-success'
+                  : 'bg-danger/10 border border-danger text-danger'
+              }`}>
                 {message.text}
               </div>
             )}
 
             <button 
               type="submit" 
-              className={`btn-submit ${activeTab}`}
+              className={`w-full py-3.5 rounded-lg text-white font-semibold text-base transition transform hover:-translate-y-0.5 ${
+                activeTab === 'deposit'
+                  ? 'bg-success hover:bg-success/80'
+                  : 'bg-danger hover:bg-danger/80'
+              } disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none`}
               disabled={loading}
             >
               {loading ? 'Processing...' : activeTab === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}
@@ -151,24 +171,24 @@ const Wallet = () => {
           </form>
         </div>
 
-        <div className="transactions-section">
-          <h2>Transaction History</h2>
+        <div className="bg-bg-secondary border border-gray-700 rounded-xl p-8">
+          <h2 className="text-2xl font-bold mb-6">Transaction History</h2>
           
           {transactions.length === 0 ? (
-            <div className="no-transactions">
+            <div className="text-center py-10 text-gray-400">
               <p>No transactions yet</p>
             </div>
           ) : (
-            <div className="transactions-list">
+            <div className="flex flex-col gap-px">
               {transactions.map((transaction) => (
-                <div key={transaction.id} className="transaction-item">
-                  <div className="transaction-info">
-                    <span className="transaction-type">{transaction.type}</span>
-                    <span className="transaction-date">
+                <div key={transaction.id} className="flex justify-between items-center p-4 bg-bg-primary border-b border-gray-700 last:border-b-0 first:rounded-t-lg last:rounded-b-lg">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold">{transaction.type}</span>
+                    <span className="text-gray-400 text-xs">
                       {new Date(transaction.createdAt).toLocaleString()}
                     </span>
                   </div>
-                  <div className={`transaction-amount ${getTransactionClass(transaction.type)}`}>
+                  <div className={`font-bold text-lg ${getTransactionClass(transaction.type)}`}>
                     {formatTransactionAmount(transaction)}
                   </div>
                 </div>
