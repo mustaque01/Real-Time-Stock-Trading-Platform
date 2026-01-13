@@ -5,7 +5,6 @@ import StockList from '../components/StockList';
 import TradeModal from '../components/TradeModal';
 import StockChart from '../components/StockChart';
 import websocketService from '../services/websocket';
-import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   const { user, token } = useAuth();
@@ -66,19 +65,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard">
+    <div className="min-h-screen">
       <Navbar />
       
-      <div className="dashboard-content">
-        <div className="dashboard-header">
-          <h1>Market Overview</h1>
-          <div className="user-info">
+      <div className="p-8 max-w-[1800px] mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Market Overview</h1>
+          <div className="text-gray-400">
             <span>Welcome, {user?.name}</span>
           </div>
         </div>
 
-        <div className="dashboard-grid">
-          <div className="stocks-section">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-bg-secondary rounded-xl p-6 border border-gray-700">
             <StockList 
               stocks={stocks} 
               onTrade={handleTrade}
@@ -86,11 +85,11 @@ const Dashboard = () => {
             />
           </div>
 
-          <div className="chart-section">
+          <div className="bg-bg-secondary rounded-xl p-6 border border-gray-700">
             {selectedStock ? (
               <StockChart stock={selectedStock} />
             ) : (
-              <div className="no-stock-selected">
+              <div className="flex justify-center items-center h-96 text-gray-400">
                 <p>Select a stock to view its chart</p>
               </div>
             )}

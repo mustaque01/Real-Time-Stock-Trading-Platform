@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import websocketService from '../services/websocket';
-import '../styles/StockList.css';
 
 const StockList = ({ stocks, onTrade, onSelectStock }) => {
   useEffect(() => {
@@ -17,17 +16,17 @@ const StockList = ({ stocks, onTrade, onSelectStock }) => {
   }, [stocks]);
 
   const getPriceChangeClass = (change) => {
-    if (change > 0) return 'positive';
-    if (change < 0) return 'negative';
-    return 'neutral';
+    if (change > 0) return 'text-positive';
+    if (change < 0) return 'text-negative';
+    return 'text-gray-400';
   };
 
   return (
-    <div className="stock-list">
-      <h2>Live Stocks</h2>
+    <div>
+      <h2 className="text-2xl font-bold mb-5">Live Stocks</h2>
       
-      <div className="stock-table">
-        <div className="stock-table-header">
+      <div className="flex flex-col gap-px">
+        <div className="grid grid-cols-[2fr_1fr_1.5fr_1fr_1.5fr] gap-4 p-4 bg-bg-tertiary rounded-t-lg font-semibold text-gray-400 text-sm">
           <div>Symbol</div>
           <div>Price</div>
           <div>Change</div>
@@ -38,32 +37,32 @@ const StockList = ({ stocks, onTrade, onSelectStock }) => {
         {stocks.map((stock) => (
           <div 
             key={stock.symbol} 
-            className="stock-row"
+            className="grid grid-cols-[2fr_1fr_1.5fr_1fr_1.5fr] gap-4 p-4 bg-bg-primary border-b border-gray-700 cursor-pointer hover:bg-bg-tertiary transition items-center"
             onClick={() => onSelectStock(stock)}
           >
-            <div className="stock-symbol">
-              <span className="symbol">{stock.symbol}</span>
-              <span className="name">{stock.name}</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-base">{stock.symbol}</span>
+              <span className="text-gray-400 text-xs mt-0.5">{stock.name}</span>
             </div>
             
-            <div className="stock-price">
+            <div className="font-semibold text-base">
               ${stock.price?.toFixed(2) || '0.00'}
             </div>
             
-            <div className={`stock-change ${getPriceChangeClass(stock.change)}`}>
+            <div className={`flex flex-col gap-0.5 ${getPriceChangeClass(stock.change)}`}>
               <span>{stock.change > 0 ? '+' : ''}{stock.change?.toFixed(2) || '0.00'}</span>
-              <span className="percentage">
+              <span className="text-xs">
                 ({stock.changePercent > 0 ? '+' : ''}{stock.changePercent?.toFixed(2) || '0.00'}%)
               </span>
             </div>
             
-            <div className="stock-volume">
+            <div>
               {stock.volume?.toLocaleString() || '0'}
             </div>
             
-            <div className="stock-actions">
+            <div className="flex gap-2">
               <button 
-                className="btn-buy" 
+                className="px-4 py-1.5 bg-success hover:bg-success/80 text-white rounded-lg text-sm font-semibold transition transform hover:-translate-y-0.5" 
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrade(stock, 'BUY');
@@ -72,7 +71,7 @@ const StockList = ({ stocks, onTrade, onSelectStock }) => {
                 Buy
               </button>
               <button 
-                className="btn-sell"
+                className="px-4 py-1.5 bg-danger hover:bg-danger/80 text-white rounded-lg text-sm font-semibold transition transform hover:-translate-y-0.5"
                 onClick={(e) => {
                   e.stopPropagation();
                   onTrade(stock, 'SELL');
