@@ -7,7 +7,6 @@ import Portfolio from './pages/Portfolio';
 import Wallet from './pages/Wallet';
 import Orders from './pages/Orders';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import './App.css';
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
