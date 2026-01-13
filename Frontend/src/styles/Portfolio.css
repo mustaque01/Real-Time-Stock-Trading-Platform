@@ -1,0 +1,116 @@
+.portfolio-page {
+  min-height: 100vh;
+}
+
+.portfolio-content {
+  padding: 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.portfolio-content h1 {
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+.portfolio-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.empty-portfolio {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 60px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.holdings-table {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.holdings-table .table-header,
+.holdings-table .table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr 1.2fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px 24px;
+  align-items: center;
+}
+
+.holdings-table .table-header {
+  background-color: var(--bg-tertiary);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.holdings-table .table-row {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.holdings-table .table-row:last-child {
+  border-bottom: none;
+}
+
+.holdings-table .stock-symbol {
+  display: flex;
+  flex-direction: column;
+}
+
+.holdings-table .stock-symbol .symbol {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.holdings-table .stock-symbol .name {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+@media (max-width: 1200px) {
+  .portfolio-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .holdings-table .table-header,
+  .holdings-table .table-row {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .holdings-table .table-header div:nth-child(n+5),
+  .holdings-table .table-row div:nth-child(n+5) {
+    display: none;
+  }
+}
