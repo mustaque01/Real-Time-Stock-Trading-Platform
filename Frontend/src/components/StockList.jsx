@@ -23,7 +23,7 @@ const StockList = ({ stocks, onTrade, onSelectStock }) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-5">Live Stocks</h2>
+      <h2 className="mb-5 text-2xl font-bold">Live Stocks</h2>
       
       <div className="flex flex-col gap-px">
         <div className="grid grid-cols-[2fr_1fr_1.5fr_1fr_1.5fr] gap-4 p-4 bg-bg-tertiary rounded-t-lg font-semibold text-gray-400 text-sm">
@@ -41,11 +41,11 @@ const StockList = ({ stocks, onTrade, onSelectStock }) => {
             onClick={() => onSelectStock(stock)}
           >
             <div className="flex flex-col">
-              <span className="font-bold text-base">{stock.symbol}</span>
+              <span className="text-base font-bold">{stock.symbol}</span>
               <span className="text-gray-400 text-xs mt-0.5">{stock.name}</span>
             </div>
             
-            <div className="font-semibold text-base">
+            <div className="text-base font-semibold">
               ${stock.price?.toFixed(2) || '0.00'}
             </div>
             

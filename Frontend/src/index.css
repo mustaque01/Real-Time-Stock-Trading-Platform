@@ -1,9 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  body {
-    @apply bg-bg-primary text-white antialiased;
-  }
+@theme {
+  --color-primary: #1a73e8;
+  --color-primary-dark: #1557b0;
+  --color-success: #0f9d58;
+  --color-danger: #db4437;
+  --color-warning: #f4b400;
+  --color-bg-primary: #0a0e27;
+  --color-bg-secondary: #131b3a;
+  --color-bg-tertiary: #1a2342;
+  --color-positive: #00ff88;
+  --color-negative: #ff4444;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
