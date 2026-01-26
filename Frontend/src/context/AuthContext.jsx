@@ -26,6 +26,23 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const fetchUser = async () => {
+    // TEMPORARY: Use dummy data when no backend
+    // TODO: Replace with real API call when backend is ready
+    
+    // Check if we have a dummy token
+    if (token && token.startsWith('dummy-token-')) {
+      const dummyUser = {
+        id: '1',
+        name: 'Test User',
+        email: 'test@example.com',
+        balance: 50000,
+      };
+      setUser(dummyUser);
+      setLoading(false);
+      return;
+    }
+    
+    /* Real API call (uncomment when backend is ready):
     try {
       const response = await axios.get('/api/auth/me');
       setUser(response.data.user);
@@ -35,9 +52,39 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+    */
+    
+    setLoading(false);
   };
 
   const login = async (email, password) => {
+    // TEMPORARY: Dummy authentication for testing (No backend required)
+    // TODO: Replace with real API call when backend is ready
+    
+    if (email && password) {
+      // Create dummy user data
+      const dummyToken = 'dummy-token-' + Date.now();
+      const dummyUser = {
+        id: '1',
+        name: 'Test User',
+        email: email,
+        balance: 50000,
+      };
+      
+      localStorage.setItem('token', dummyToken);
+      setToken(dummyToken);
+      setUser(dummyUser);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${dummyToken}`;
+      
+      return { success: true };
+    }
+    
+    return { 
+      success: false, 
+      message: 'Please enter email and password' 
+    };
+
+    /* Real API call (uncomment when backend is ready):
     try {
       const response = await axios.post('/api/auth/login', { email, password });
       const { token: newToken, user: userData } = response.data;
@@ -54,9 +101,37 @@ export const AuthProvider = ({ children }) => {
         message: error.response?.data?.message || 'Login failed' 
       };
     }
+    */
   };
 
   const register = async (name, email, password) => {
+    // TEMPORARY: Dummy registration for testing (No backend required)
+    // TODO: Replace with real API call when backend is ready
+    
+    if (name && email && password) {
+      // Create dummy user data
+      const dummyToken = 'dummy-token-' + Date.now();
+      const dummyUser = {
+        id: '1',
+        name: name,
+        email: email,
+        balance: 50000,
+      };
+      
+      localStorage.setItem('token', dummyToken);
+      setToken(dummyToken);
+      setUser(dummyUser);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${dummyToken}`;
+      
+      return { success: true };
+    }
+    
+    return { 
+      success: false, 
+      message: 'Please fill all fields' 
+    };
+
+    /* Real API call (uncomment when backend is ready):
     try {
       const response = await axios.post('/api/auth/register', { name, email, password });
       const { token: newToken, user: userData } = response.data;
@@ -73,6 +148,7 @@ export const AuthProvider = ({ children }) => {
         message: error.response?.data?.message || 'Registration failed' 
       };
     }
+    */
   };
 
   const logout = () => {
