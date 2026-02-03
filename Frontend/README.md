@@ -186,10 +186,6 @@ VITE_WS_URL=ws://localhost:5000
 
 This project is for educational purposes.
 
-## 👨‍💻 Author
-
-Built with ❤️ for learning purposes
-
 ---
 
 **Note**: This is a frontend-only implementation. Backend development is pending.
