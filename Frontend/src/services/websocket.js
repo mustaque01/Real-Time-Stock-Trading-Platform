@@ -2,43 +2,58 @@ import { io } from 'socket.io-client';
 
 class WebSocketService {
   constructor() {
-    this.socket = null;
+    this.ws = null;
     this.listeners = new Map();
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
   }
 
   connect(token) {
-    if (this.socket?.connected) return;
+    if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    this.socket = io('http://localhost:5000', {
-      auth: { token },
-      transports: ['websocket'],
-    });
+    this.ws = new WebSocket('ws://localhost:5000');
 
-    this.socket.on('connect', () => {
+    this.ws.onopen = () => {
       console.log('WebSocket connected');
-    });
+      this.reconnectAttempts = 0;
+    };
 
-    this.socket.on('disconnect', () => {
+    this.ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'initial') {
+          this.emit('stockPrice', data.data);
+        } else if (data.type === 'update') {
+          this.emit('stockPrice', data.data);
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    };
+
+    this.ws.onclose = () => {
       console.log('WebSocket disconnected');
-    });
+      this.attemptReconnect(token);
+    };
 
-    this.socket.on('stockPrice', (data) => {
-      this.emit('stockPrice', data);
-    });
+    this.ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  }
 
-    this.socket.on('orderUpdate', (data) => {
-      this.emit('orderUpdate', data);
-    });
-
-    this.socket.on('tradeExecuted', (data) => {
-      this.emit('tradeExecuted', data);
-    });
+  attemptReconnect(token) {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      setTimeout(() => this.connect(token), 3000);
+    }
   }
 
   disconnect() {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
     }
   }
 
@@ -65,15 +80,9 @@ class WebSocketService {
     }
   }
 
-  subscribeToStock(symbol) {
-    if (this.socket) {
-      this.socket.emit('subscribeStock', symbol);
-    }
-  }
-
-  unsubscribeFromStock(symbol) {
-    if (this.socket) {
-      this.socket.emit('unsubscribeStock', symbol);
+  send(data) {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(data));
     }
   }
 }

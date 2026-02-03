@@ -28,6 +28,11 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Real-Time Stock Trading Platform API' });
 });
 
+// Get all stocks endpoint
+app.get('/api/stocks', (req, res) => {
+  res.json({ stocks });
+});
+
 // Stock price simulation
 const stocks = [
   { symbol: 'AAPL', name: 'Apple Inc.', price: 175.50 },
