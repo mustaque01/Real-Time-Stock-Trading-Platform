@@ -17,12 +17,12 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user already exists
-    const userCheck = await pool.query(
-      'SELECT * FROM users WHERE email = $1 OR username = $2',
+    const [userCheck] = await pool.query(
+      'SELECT * FROM users WHERE email = ? OR username = ?',
       [email, username]
     );
 
-    if (userCheck.rows.length > 0) {
+    if (userCheck.length > 0) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
@@ -30,20 +30,22 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert user
-    const result = await pool.query(
-      'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email',
+    const [result] = await pool.query(
+      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
       [username, email, hashedPassword]
     );
 
+    const userId = result.insertId;
+
     // Create wallet for new user
     await pool.query(
-      'INSERT INTO wallets (user_id, balance) VALUES ($1, $2)',
-      [result.rows[0].id, 10000.00]
+      'INSERT INTO wallets (user_id, balance) VALUES (?, ?)',
+      [userId, 10000.00]
     );
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: result.rows[0]
+      user: { id: userId, username, email }
     });
   } catch (error) {
     console.error('Register error:', error);
@@ -62,16 +64,16 @@ router.post('/login', async (req, res) => {
     }
 
     // Get user
-    const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
+    const [result] = await pool.query(
+      'SELECT * FROM users WHERE email = ?',
       [email]
     );
 
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const user = result.rows[0];
+    const user = result[0];
 
     // Verify password
     const validPassword = await bcrypt.compare(password, user.password);
